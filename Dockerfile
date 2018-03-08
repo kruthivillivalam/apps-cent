@@ -1,20 +1,27 @@
-FROM tomcat:9.0.0-jre8
+FROM centos:7.2.1511
+
+#RUN rpm --import http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-7 \
+#    && rpm --import http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7 \
+#    && yum -y install epel-release.noarch
+
+
+RUN yum -y install \    
+    openssh-server \
+    vim \
+    && yum -y update bash \
+    && rm -rf /var/cache/yum/* \
+    && yum clean all
+
+
+# UTC Timezone & Networking
+#
+RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime \
+    && echo "NETWORKING=yes" > /etc/sysconfig/network
 
 COPY init_container.sh /bin/
 
-RUN apt-get update \
-	&& apt install -y --no-install-recommends \
-		openssh-server \
-	&& apt install -y vim \
-	&& chmod 755 /bin/init_container.sh \
+RUN chmod 755 /bin/init_container.sh \
 	&& echo "root:Docker!" | chpasswd 
-	
-RUN rm -fr /usr/local/tomcat/webapps \
-    && rm -fr /usr/local/tomcat/logs \
-
-    && ln -s /home/site/wwwroot /usr/local/tomcat/webapps \
-    && ln -s /home/LogFiles /usr/local/tomcat/logs \
-	&& chmod 777 /bin/init_container.sh 
 	
 COPY sshd_config /etc/ssh/
 
