@@ -10,7 +10,8 @@ RUN yum -y install \
     vim \
     && yum -y update bash \
     && rm -rf /var/cache/yum/* \
-    && yum clean all
+    && yum clean all \
+    && systemctl enable sshd.service
 
 
 # UTC Timezone & Networking
@@ -18,15 +19,10 @@ RUN yum -y install \
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime \
     && echo "NETWORKING=yes" > /etc/sysconfig/network
 
-COPY init_container.sh /bin/
-
-RUN chmod 755 /bin/init_container.sh \
-	&& echo "root:Docker!" | chpasswd 
+RUN echo "root:Docker!" | chpasswd 
 	
 COPY sshd_config /etc/ssh/
 
 EXPOSE 2222	
 
-EXPOSE 8080
-
-CMD ["/bin/init_container.sh"]
+CMD ["/sbin/init"]
