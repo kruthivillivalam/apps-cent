@@ -10,8 +10,7 @@ RUN yum -y install \
     vim \
     && yum -y update bash \
     && rm -rf /var/cache/yum/* \
-    && yum clean all \
-    && systemctl enable sshd.service
+    && yum clean all
 
 
 # UTC Timezone & Networking
@@ -25,4 +24,4 @@ COPY sshd_config /etc/ssh/
 
 EXPOSE 2222	
 
-CMD ["/sbin/init"]
+CMD ["/usr/sbin/sshd", "-D"]
