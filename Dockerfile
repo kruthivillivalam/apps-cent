@@ -23,5 +23,6 @@ RUN echo "root:Docker!" | chpasswd
 COPY sshd_config /etc/ssh/
 
 EXPOSE 2222	
+RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
 
 CMD ["/usr/sbin/sshd", "-D"]
