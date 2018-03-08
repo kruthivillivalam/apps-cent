@@ -1,2 +1,2 @@
 #!/bin/bash
-service sshd start
+systemctl start sshd.service
